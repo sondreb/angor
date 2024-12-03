@@ -82,6 +82,7 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R ./
       shell: bash
+      continue-on-error: true
 
     - name: Create Release
       id: create_release
