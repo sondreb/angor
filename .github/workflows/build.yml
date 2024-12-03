@@ -57,19 +57,19 @@ jobs:
       run: |
         cd publish
         if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          7z a -tzip "../blazor-app-windows.zip" .
+          7z a -tzip "../angor-windows.zip" .
         elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          zip -r "../blazor-app-linux.zip" .
+          zip -r "../angor-linux.zip" .
         else
-          zip -r "../blazor-app-mac.zip" .
+          zip -r "../angor-mac.zip" .
         fi
       shell: bash
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: blazor-app-${{ matrix.os }}
-        path: blazor-app-${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'ubuntu-latest' && 'linux' || 'mac' }}.zip
+        name: angor-${{ matrix.os }}
+        path: angor-${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'ubuntu-latest' && 'linux' || 'mac' }}.zip
 
   create-release:
     needs: build
@@ -79,6 +79,10 @@ jobs:
     - name: Download all artifacts
       uses: actions/download-artifact@v3
       
+    - name: Display structure of downloaded files
+      run: ls -R artifacts/
+      shell: bash
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -88,13 +92,25 @@ jobs:
         tag_name: v${{ github.run_number }}
         release_name: Release v${{ github.run_number }}
         draft: true
-        
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
+
+    - name: Create Release and Upload Assets
+      uses: softprops/action-gh-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./blazor-app-${{ matrix.os }}/blazor-app-${{ matrix.os }}.zip
-        asset_name: blazor-app-${{ matrix.os }}.zip
-        asset_content_type: application/zip
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          draft: true
+          files: |
+            angor-*/angor-*.zip
+            blazor-app-*/blazor-app-*.zip
+
+    # - name: Upload Release Assets
+    #   uses: actions/upload-release-asset@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #     asset_path: ./blazor-app-${{ matrix.os }}/blazor-app-${{ matrix.os }}.zip
+    #     asset_name: blazor-app-${{ matrix.os }}.zip
+    #     asset_content_type: application/zip
