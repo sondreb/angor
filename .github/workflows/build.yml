@@ -49,7 +49,7 @@ jobs:
     #   run: dotnet build --configuration Release --no-restore
 
     - name: Publish
-      run: dotnet publish -r ${{matrix.runtime}} /p:Version=${{ env.VERSION }} -v m -o ./src/${{ env.PROJECT_NAME }}/bin/publish ${{env.PROJECT_PATH}}
+      run: dotnet publish -r ${{matrix.runtime}} /p:Version=${{ env.VERSION }} -v m -o publish  ${{env.PROJECT_PATH}}
       env:
         matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
