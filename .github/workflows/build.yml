@@ -6,16 +6,28 @@ on:
 
 jobs:
   build:
+    strategy:
+        matrix:
+          os: [windows-latest, ubuntu-latest, macos-latest]
+          include:
+            - os: windows-latest
+              extension: ".zip"
+              runtime: "win-x64"
+            - os: ubuntu-latest
+              extension: ".tar.gz"
+              runtime: "linux-x64"
+            - os: macos-latest
+              runtime: "osx-x64"
+              extension: ".zip"
+          node_version: [22]
+        fail-fast: false
+  
     runs-on: ${{ matrix.os }}
 
     env:
         PROJECT_NAME: "Angor"
         SOLUTION_PATH: "src/Angor.sln"
         PROJECT_PATH: "src/Angor/Server/Angor.Server.csproj"
-
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
