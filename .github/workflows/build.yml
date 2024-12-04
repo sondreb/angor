@@ -110,11 +110,11 @@ jobs:
           name: angor-desktop-${{ env.VERSION }}-amd64.AppImage
           path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.os == 'macos-latest'
-      with:
-        name: angor-desktop-${{ env.VERSION }}-app
-        path: src-tauri/target/release/bundle/macos/Angor.app
+    # - uses: actions/upload-artifact@v4
+    #   if: matrix.os == 'macos-latest'
+    #   with:
+    #     name: angor-desktop-${{ env.VERSION }}-app
+    #     path: src-tauri/target/release/bundle/macos/Angor.app
 
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'macos-latest'
@@ -151,7 +151,7 @@ jobs:
           echo VERSION=$(npm run version --silent) >> $GITHUB_ENV
       shell: bash
 
-    - name: Downlod Artifacts 
+    - name: Download Artifacts 
       uses: actions/download-artifact@v4
       with:
         path: artifacts
@@ -187,7 +187,7 @@ jobs:
           name: Angor (${{ env.VERSION }})
           draft: true
           files: |
-            angor-*/angor-*.zip
+            artifacts/*
 
     # - name: Upload Release Assets
     #   uses: actions/upload-release-asset@v1
