@@ -65,7 +65,7 @@ jobs:
         elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
           zip -r "../angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         else
-          zip -r "../angor-web-${{ env.VERSION }}-mac-x64.zip" .
+          zip -r "../angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         fi
       shell: bash
 
