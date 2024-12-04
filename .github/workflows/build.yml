@@ -96,19 +96,25 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-amd64.deb
-        path: src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb
+        path: src-tauri/target/release/bundle/**/*
+  
+    # - uses: actions/upload-artifact@v4
+    #   if: matrix.os == 'ubuntu-latest'
+    #   with:
+    #     name: angor-desktop-${{ env.VERSION }}-amd64.deb
+    #     path: src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
-      with:
-        name: angor-desktop-${{ env.VERSION }}-1.x86_64.rpm
-        path: src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm
+    # - uses: actions/upload-artifact@v4
+    #   if: matrix.os == 'ubuntu-latest'
+    #   with:
+    #     name: angor-desktop-${{ env.VERSION }}-1.x86_64.rpm
+    #     path: src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm
 
-    - uses: actions/upload-artifact@v4
-      if: matrix.os == 'ubuntu-latest'
-      with:
-          name: angor-desktop-${{ env.VERSION }}-amd64.AppImage
-          path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
+    # - uses: actions/upload-artifact@v4
+    #   if: matrix.os == 'ubuntu-latest'
+    #   with:
+    #       name: angor-desktop-${{ env.VERSION }}-amd64.AppImage
+    #       path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
 
     # - uses: actions/upload-artifact@v4
     #   if: matrix.os == 'macos-latest'
