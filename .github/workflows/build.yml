@@ -71,7 +71,7 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: angor-${{ env.VERSION }}-${{ matrix.runtime }}
+        name: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
         path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
 
   create-release:
@@ -97,15 +97,15 @@ jobs:
       shell: bash
       continue-on-error: true
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ env.VERSION }}
-        release_name: Release v${{ github.run_number }}
-        draft: true
+    # - name: Create Release
+    #   id: create_release
+    #   uses: actions/create-release@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     tag_name: ${{ env.VERSION }}
+    #     release_name: Release v${{ env.VERSION }}
+    #     draft: true
 
     - name: Create Release and Upload Assets
       uses: softprops/action-gh-release@v1
@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           tag_name: ${{ env.VERSION }}
-          name: Release v${{ github.run_number }}
+          name: ${{ env.PROJECT_NAME }} (${{ env.VERSION }})
           draft: true
           files: |
             angor-*/angor-*.zip
