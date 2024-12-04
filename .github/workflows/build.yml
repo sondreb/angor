@@ -72,7 +72,7 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: angor-web-${{ env.VERSION }}-${{ matrix.runtime }}
+        name: angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip
         path: angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip
 
     - name: Install Rust (Stable)
@@ -92,29 +92,41 @@ jobs:
         npm install
         npm run tauri:build
 
+    - name: Rename Linux files
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        mv src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb src-tauri/target/release/bundle/deb/angor-desktop-${{ env.VERSION }}-amd64.deb
+        mv src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm src-tauri/target/release/bundle/rpm/angor-desktop-${{ env.VERSION }}-x86_64.rpm
+        mv src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage src-tauri/target/release/bundle/appimage/angor-desktop-${{ env.VERSION }}-amd64.AppImage
+
+    - name: Rename Mac files
+      if: matrix.os == 'macos-latest'
+      run: |
+        mv src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_aarch64.dmg src-tauri/target/release/bundle/appimage/angor-desktop-${{ env.VERSION }}-aarch64.dmg
+
+    - name: Rename Mac files
+      if: matrix.os == 'windows-latest'
+      run: |
+        mv src-tauri/target/release/bundle/msi/Angor_${{ env.VERSION }}_x64_en-US.msi src-tauri/target/release/bundle/msi/angor-desktop-${{ env.VERSION }}-x64.msi
+        mv src-tauri/target/release/bundle/nsis/Angor_${{ env.VERSION }}_x64-setup.exe src-tauri/target/release/bundle/nsis/angor-desktop-${{ env.VERSION }}-x64.exe
+
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-amd64.deb
-        path: src-tauri/target/release/bundle/**/*
-  
-    # - uses: actions/upload-artifact@v4
-    #   if: matrix.os == 'ubuntu-latest'
-    #   with:
-    #     name: angor-desktop-${{ env.VERSION }}-amd64.deb
-    #     path: src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb
+        path: src-tauri/target/release/bundle/deb/angor-desktop-${{ env.VERSION }}-amd64.deb
 
-    # - uses: actions/upload-artifact@v4
-    #   if: matrix.os == 'ubuntu-latest'
-    #   with:
-    #     name: angor-desktop-${{ env.VERSION }}-1.x86_64.rpm
-    #     path: src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        name: angor-desktop-${{ env.VERSION }}-x86_64.rpm
+        path: src-tauri/target/release/bundle/rpm/angor-desktop-${{ env.VERSION }}-x86_64.rpm
 
-    # - uses: actions/upload-artifact@v4
-    #   if: matrix.os == 'ubuntu-latest'
-    #   with:
-    #       name: angor-desktop-${{ env.VERSION }}-amd64.AppImage
-    #       path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+          name: angor-desktop-${{ env.VERSION }}-amd64.AppImage
+          path: src-tauri/target/release/bundle/appimage/angor-desktop-${{ env.VERSION }}-amd64.AppImage
 
     # - uses: actions/upload-artifact@v4
     #   if: matrix.os == 'macos-latest'
@@ -126,19 +138,19 @@ jobs:
       if: matrix.os == 'macos-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-aarch64.dmg
-        path: src-tauri/target/release/bundle/dmg/Angor_${{ env.VERSION }}_aarch64.dmg
+        path: src-tauri/target/release/bundle/dmg/angor-desktop-${{ env.VERSION }}-aarch64.dmg
 
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'windows-latest'
       with:
-          name: angor-desktop-${{ env.VERSION }}-x64_en-US.msi
-          path: src-tauri\target\release\bundle\msi\Angor_${{ env.VERSION }}_x64_en-US.msi
+          name: angor-desktop-${{ env.VERSION }}-x64.msi
+          path: src-tauri\target\release\bundle\msi\angor-desktop-${{ env.VERSION }}-x64.msi
   
     - uses: actions/upload-artifact@v4
       if: matrix.os == 'windows-latest'
       with:
-          name: angor-desktop-${{ env.VERSION }}-x64-setup.exe
-          path: src-tauri\target\release\bundle\nsis\Angor_${{ env.VERSION }}_x64-setup.exe
+          name: angor-desktop-${{ env.VERSION }}-x64.exe
+          path: src-tauri\target\release\bundle\nsis\angor-desktop-${{ env.VERSION }}-x64.exe
   
 
   create-release:
