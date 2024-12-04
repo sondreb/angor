@@ -222,6 +222,8 @@ jobs:
         npm install csso-cli -g
         find dist/wwwroot/assets/css -type f -name '*.css' -exec csso {} -o {} \;
 
+    - uses: actions/checkout@v3
+
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
