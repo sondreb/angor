@@ -1,4 +1,4 @@
-name: Build and Publish Blazor App
+name: Build and Publish
 
 on:
   push:
@@ -79,6 +79,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Download single file
+      run: |
+            curl -O https://raw.githubusercontent.com/sondreb/angor/main/package.json
+      shell: bash
+
+    - name: Variables
+      run: |
+          echo VERSION=$(npm run version --silent) >> $GITHUB_ENV
+      shell: bash
+
     - name: Download all artifacts
       uses: actions/download-artifact@v3
       
