@@ -92,29 +92,48 @@ jobs:
         npm install
         npm run tauri:build
 
-    - name: Upload individual artifacts
-      run: |
-          cd src-tauri/target/release/bundle
-          find . -type f -name "*.*" | while read filepath; do
-            filename=$(basename "$filepath")
-            echo "Uploading $filename"
-            echo "::group::Upload $filename"
-            echo "artifact_name=angor-desktop-${{ env.VERSION }}-${filename}" >> $GITHUB_ENV
-            
-            # Create individual artifact upload step
-            echo "
-            - uses: actions/upload-artifact@v4
-              with:
-                name: \${{ env.artifact_name }}
-                path: $filepath
-            " >> $GITHUB_STEP_SUMMARY
-            
-            # Actually perform the upload
-            gh workflow run upload-artifact --field name="${{ env.artifact_name }}" --field path="$filepath"
-          done
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        name: angor-desktop-${{ env.VERSION }}-amd64.deb.zip
+        path: src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+        name: angor-desktop-${{ env.VERSION }}-1.x86_64.rpm.zip
+        path: src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'ubuntu-latest'
+      with:
+          name: angor-desktop-${{ env.VERSION }}-amd64.AppImage.zip
+          path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'macos-latest'
+      with:
+        name: angor-desktop-${{ env.VERSION }}-app.zip
+        path: src-tauri/target/release/bundle/macos/Angor.app
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'macos-latest'
+      with:
+        name: angor-desktop-${{ env.VERSION }}-aarch64.dmg.zip
+        path: src-tauri/target/release/bundle/dmg/Angor_${{ env.VERSION }}_aarch64.dmg
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'windows-latest'
+      with:
+          name: angor-desktop-${{ env.VERSION }}-x64_en-US.msi.zip
+          path: src-tauri\target\release\bundle\msi\Angor_${{ env.VERSION }}_x64_en-US.msi
+  
+    - uses: actions/upload-artifact@v4
+      if: matrix.os == 'windows-latest'
+      with:
+          name: angor-desktop-${{ env.VERSION }}-x64-setup.exe.zip
+          path: src-tauri\target\release\bundle\nsis\Angor_${{ env.VERSION }}_x64-setup.exe
+  
 
   create-release:
     name: Publish
