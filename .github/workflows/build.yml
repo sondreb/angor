@@ -93,7 +93,6 @@ jobs:
         npm run tauri:build
 
     - name: Upload individual artifacts
-      if: matrix.os == 'ubuntu-latest'
       run: |
           cd src-tauri/target/release/bundle
           find . -type f -name "*.*" | while read filepath; do
