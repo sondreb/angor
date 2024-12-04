@@ -71,8 +71,8 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: angor-${{ matrix.os }}
-        path: angor-${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'ubuntu-latest' && 'linux' || 'mac' }}.zip
+        name: angor-${{ env.VERSION }}-${{ matrix.runtime }}
+        path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
 
   create-release:
     needs: build
