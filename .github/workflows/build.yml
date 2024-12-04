@@ -70,10 +70,33 @@ jobs:
       shell: bash
 
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
         path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
+
+    - name: Install Rust (Stable)
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: stable
+          override: true
+
+    - name: Install Linux dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+            sudo apt-get update
+            sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev webkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev
+  
+    - name: Install and build
+      run: |
+        npm install
+        npm run tauri:build
+
+    - uses: actions/upload-artifact@v4
+      with:
+          name: angor-desktop-${{ env.VERSION }}-${{ matrix.runtime }}
+          path: |
+            src-tauri\target\release\bundle\**\*.*
 
   create-release:
     name: Publish
