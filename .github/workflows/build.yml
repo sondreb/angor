@@ -161,24 +161,6 @@ jobs:
     - name: List Files
       run: ls -R
 
-    # - name: Download all artifacts
-    #   uses: actions/download-artifact@v3
-      
-    # - name: Display structure of downloaded files
-    #   run: ls -R ./
-    #   shell: bash
-    #   continue-on-error: true
-
-    # - name: Create Release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ env.VERSION }}
-    #     release_name: Release v${{ env.VERSION }}
-    #     draft: true
-
     - name: Create Release and Upload Assets
       uses: softprops/action-gh-release@v1
       env:
@@ -190,12 +172,62 @@ jobs:
           files: |
             artifacts/*
 
-    # - name: Upload Release Assets
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy-release:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download single file
+      run: |
+            curl -O https://raw.githubusercontent.com/sondreb/angor/main/package.json
+      shell: bash
+
+    - name: Variables
+      run: |
+          echo VERSION=$(npm run version --silent) >> $GITHUB_ENV
+      shell: bash
+
+    - name: Download Artifacts 
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+        merge-multiple: true
+  
+    - name: List Files
+      run: ls -R
+
+    - name: Unzip Artifact
+      run: |
+        unzip artifacts/angor-web-0.0.71-linux-x64.zip -d ${{env.OUTPUT_PATH}}
+      shell: bash
+
+    - name: Copy index.html to 404.html
+      run: cp ${{env.OUTPUT_PATH}}/wwwroot/index.html ${{env.OUTPUT_PATH}}/wwwroot/404.html
+      
+    - name: Add .nojekyll file
+      run: touch ${{env.OUTPUT_PATH}}/wwwroot/.nojekyll
+
+    - name: Minify and replace JS files
+      run: |
+        npm install uglify-js -g
+        find ${{env.OUTPUT_PATH}}/wwwroot/assets/js -type f -name '*.js' -exec uglifyjs {} -o {} --compress --mangle \;
+
+    - name: Minify and replace CSS files
+      run: |
+        npm install csso-cli -g
+        find ${{env.OUTPUT_PATH}}/wwwroot/assets/css -type f -name '*.css' -exec csso {} -o {} \;
+
+    - name: Deploy to Github Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+          branch: main 
+          folder: ${{env.OUTPUT_PATH}}/wwwroot
+          repository-name: sondreb/angor-test
+          token: ${{ secrets.ANGOR_DEPLOY_TOKEN }}
+
+    # - name: Deploy to Github Pages
+    #   uses: JamesIves/github-pages-deploy-action@v4
     #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./blazor-app-${{ matrix.os }}/blazor-app-${{ matrix.os }}.zip
-    #     asset_name: blazor-app-${{ matrix.os }}.zip
-    #     asset_content_type: application/zip
+    #       branch: gh-pages 
+    #       folder: ${{env.OUTPUT_PATH}}/wwwroot
