@@ -86,17 +86,36 @@ jobs:
       run: |
             sudo apt-get update
             sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev webkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libsoup-3.0-dev libjavascriptcoregtk-4.1-dev
-  
+
     - name: Install and build
       run: |
         npm install
         npm run tauri:build
 
-    - uses: actions/upload-artifact@v4
-      with:
-          name: angor-desktop-${{ env.VERSION }}-${{ matrix.runtime }}
-          path: |
-            src-tauri\target\release\bundle\**\*.*
+    - name: Upload individual artifacts
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+          cd src-tauri/target/release/bundle
+          find . -type f -name "*.*" | while read filepath; do
+            filename=$(basename "$filepath")
+            echo "Uploading $filename"
+            echo "::group::Upload $filename"
+            echo "artifact_name=angor-desktop-${{ env.VERSION }}-${filename}" >> $GITHUB_ENV
+            
+            # Create individual artifact upload step
+            echo "
+            - uses: actions/upload-artifact@v4
+              with:
+                name: \${{ env.artifact_name }}
+                path: $filepath
+            " >> $GITHUB_STEP_SUMMARY
+            
+            # Actually perform the upload
+            gh workflow run upload-artifact --field name="${{ env.artifact_name }}" --field path="$filepath"
+          done
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-release:
     name: Publish
