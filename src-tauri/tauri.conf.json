@@ -6,8 +6,8 @@
   "build": {
     "beforeDevCommand": "dotnet watch run --project src/Angor/Client/Angor.Client.csproj",
     "devUrl": "http://localhost:5062",
-    "beforeBuildCommand": "dotnet publish -c release src/Angor/Client/Angor.Client.csproj -o dist",
-    "frontendDist": "../dist/wwwroot"
+    "beforeBuildCommand": "",
+    "frontendDist": "../publish/wwwroot"
   },
   "app": {
     "withGlobalTauri": true,
