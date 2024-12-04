@@ -70,7 +70,7 @@ jobs:
       shell: bash
 
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
         path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
