@@ -60,11 +60,11 @@ jobs:
       run: |
         cd publish
         if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          7z a -tzip "../angor-windows.zip" .
+          7z a -tzip "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          zip -r "../angor-linux.zip" .
+          zip -r "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         else
-          zip -r "../angor-mac.zip" .
+          zip -r "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         fi
       shell: bash
 
