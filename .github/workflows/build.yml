@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   build:
+    name: Build (${{ matrix.os }})
     strategy:
         matrix:
           os: [windows-latest, ubuntu-latest, macos-latest]
@@ -75,7 +76,7 @@ jobs:
         path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
 
   create-release:
-    name: Create Release and Upload Artifacts
+    name: Publish
     needs: build
     runs-on: ubuntu-latest
     
