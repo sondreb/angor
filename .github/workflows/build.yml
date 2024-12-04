@@ -57,6 +57,11 @@ jobs:
       env:
         matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
+    - name: Run Tests
+      run: dotnet test ${{env.SOLUTION_PATH}} --configuration Release -r ${{matrix.runtime}} --no-build --verbosity normal
+      env:
+        matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
+
     - name: Zip Release
       run: |
         cd publish
