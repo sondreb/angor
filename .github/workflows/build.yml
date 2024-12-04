@@ -100,7 +100,7 @@ jobs:
     - name: Rename Mac files
       if: matrix.os == 'macos-latest'
       run: |
-        mv src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_aarch64.dmg src-tauri/target/release/bundle/appimage/angor-desktop-${{ env.VERSION }}-aarch64.dmg
+        mv src-tauri/target/release/bundle/dmg/Angor_${{ env.VERSION }}_aarch64.dmg src-tauri/target/release/bundle/dmg/angor-desktop-${{ env.VERSION }}-aarch64.dmg
 
     - name: Rename Mac files
       if: matrix.os == 'windows-latest'
