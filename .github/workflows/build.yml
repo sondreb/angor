@@ -114,6 +114,7 @@ jobs:
         mv src-tauri/target/release/bundle/msi/Angor_${{ env.VERSION }}_x64_en-US.msi src-tauri/target/release/bundle/msi/angor-desktop-${{ env.VERSION }}-win-x64.msi
 
     - uses: actions/upload-artifact@v4
+      name: Upload Linux
       if: matrix.os == 'ubuntu-latest'
       with:
           name: angor-desktop-${{ env.VERSION }}-linux-amd64.AppImage
@@ -126,12 +127,14 @@ jobs:
     #     path: src-tauri/target/release/bundle/macos/Angor.app
 
     - uses: actions/upload-artifact@v4
+      name: Upload Mac
       if: matrix.os == 'macos-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-mac-aarch64.dmg
         path: src-tauri/target/release/bundle/dmg/angor-desktop-${{ env.VERSION }}-mac-aarch64.dmg
 
     - uses: actions/upload-artifact@v4
+      name: Upload Windows
       if: matrix.os == 'windows-latest'
       with:
           name: angor-desktop-${{ env.VERSION }}-win-x64.msi
@@ -200,30 +203,30 @@ jobs:
 
     - name: Unzip Artifact
       run: |
-        unzip artifacts/angor-web-0.0.71-linux-x64.zip -d ${{env.OUTPUT_PATH}}
+        unzip artifacts/angor-web-${{ env.VERSION }}-linux-x64.zip -d dist
       shell: bash
 
     - name: Copy index.html to 404.html
-      run: cp ${{env.OUTPUT_PATH}}/wwwroot/index.html ${{env.OUTPUT_PATH}}/wwwroot/404.html
+      run: cp dist/wwwroot/index.html dist/wwwroot/404.html
       
     - name: Add .nojekyll file
-      run: touch ${{env.OUTPUT_PATH}}/wwwroot/.nojekyll
+      run: touch dist/wwwroot/.nojekyll
 
     - name: Minify and replace JS files
       run: |
         npm install uglify-js -g
-        find ${{env.OUTPUT_PATH}}/wwwroot/assets/js -type f -name '*.js' -exec uglifyjs {} -o {} --compress --mangle \;
+        find dist/wwwroot/assets/js -type f -name '*.js' -exec uglifyjs {} -o {} --compress --mangle \;
 
     - name: Minify and replace CSS files
       run: |
         npm install csso-cli -g
-        find ${{env.OUTPUT_PATH}}/wwwroot/assets/css -type f -name '*.css' -exec csso {} -o {} \;
+        find dist/wwwroot/assets/css -type f -name '*.css' -exec csso {} -o {} \;
 
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
           branch: main 
-          folder: ${{env.OUTPUT_PATH}}/wwwroot
+          folder: $dist/wwwroot
           repository-name: sondreb/angor-test
           token: ${{ secrets.ANGOR_DEPLOY_TOKEN }}
 
