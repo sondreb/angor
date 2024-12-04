@@ -61,19 +61,19 @@ jobs:
       run: |
         cd publish
         if [ "${{ matrix.os }}" = "windows-latest" ]; then
-          7z a -tzip "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
+          7z a -tzip "../angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-          zip -r "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
+          zip -r "../angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         else
-          zip -r "../angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
+          zip -r "../angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip" .
         fi
       shell: bash
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
-        path: angor-${{ env.VERSION }}-${{ matrix.runtime }}.zip
+        name: angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip
+        path: angor-web-${{ env.VERSION }}-${{ matrix.runtime }}.zip
 
     - name: Install Rust (Stable)
       uses: actions-rs/toolchain@v1
@@ -92,43 +92,43 @@ jobs:
         npm install
         npm run tauri:build
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-amd64.deb.zip
         path: src-tauri/target/release/bundle/deb/Angor_${{ env.VERSION }}_amd64.deb
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-1.x86_64.rpm.zip
         path: src-tauri/target/release/bundle/rpm/Angor-${{ env.VERSION }}-1.x86_64.rpm
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
       with:
           name: angor-desktop-${{ env.VERSION }}-amd64.AppImage.zip
           path: src-tauri/target/release/bundle/appimage/Angor_${{ env.VERSION }}_amd64.AppImage
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'macos-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-app.zip
         path: src-tauri/target/release/bundle/macos/Angor.app
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'macos-latest'
       with:
         name: angor-desktop-${{ env.VERSION }}-aarch64.dmg.zip
         path: src-tauri/target/release/bundle/dmg/Angor_${{ env.VERSION }}_aarch64.dmg
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
           name: angor-desktop-${{ env.VERSION }}-x64_en-US.msi.zip
           path: src-tauri\target\release\bundle\msi\Angor_${{ env.VERSION }}_x64_en-US.msi
   
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       if: matrix.os == 'windows-latest'
       with:
           name: angor-desktop-${{ env.VERSION }}-x64-setup.exe.zip
