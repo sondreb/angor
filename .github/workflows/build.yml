@@ -58,7 +58,7 @@ jobs:
         matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
     - name: Run Tests
-      run: dotnet test--configuration Release -r ${{matrix.runtime}} --verbosity normal  ${{env.SOLUTION_PATH}} 
+      run: dotnet test --configuration Release -r ${{matrix.runtime}} --no-build --verbosity normal  ${{env.SOLUTION_PATH}} 
       env:
         matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
