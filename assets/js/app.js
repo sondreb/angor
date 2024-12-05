@@ -1,0 +1,1 @@
+window.angor={installApp:function(){window.AngorAPP.installPWA()},showSnackbar:function(n,o){let a=document.getElementById("snackbar");a.innerHTML=n,a.classList.add("show"),setTimeout(function(){a.classList.remove("show")},1e3*o)},addDarkBackground:function(){document.body.classList.add("dark")},addLightBackground:function(){document.body.classList.remove("dark")}};
