@@ -182,10 +182,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Download single file
-      run: |
-            curl -O https://raw.githubusercontent.com/sondreb/angor/main/package.json
-      shell: bash
+    - uses: actions/checkout@v3
+
+    # - name: Download single file
+    #   run: |
+    #         curl -O https://raw.githubusercontent.com/sondreb/angor/main/package.json
+    #   shell: bash
 
     - name: Variables
       run: |
@@ -221,8 +223,6 @@ jobs:
       run: |
         npm install csso-cli -g
         find dist/wwwroot/assets/css -type f -name '*.css' -exec csso {} -o {} \;
-
-    - uses: actions/checkout@v3
 
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@v4
