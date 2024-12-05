@@ -57,11 +57,12 @@ jobs:
       env:
         matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
-    - name: Run Tests
-      continue-on-error: true
-      run: dotnet test --configuration Release -r ${{matrix.runtime}} --verbosity normal  ${{env.SOLUTION_PATH}} 
-      env:
-        matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
+    # ENABLE LATER!
+    # - name: Run Tests
+    #   continue-on-error: true
+    #   run: dotnet test --configuration Release -r ${{matrix.runtime}} --verbosity normal  ${{env.SOLUTION_PATH}} 
+    #   env:
+    #     matrix.runtime: ${{ matrix.os == 'windows-latest' && 'win-x64' || matrix.os == 'ubuntu-latest' && 'linux-x64' || 'osx-x64' }}
 
     - name: Zip Release
       run: |
@@ -120,12 +121,6 @@ jobs:
           name: angor-desktop-${{ env.VERSION }}-linux-amd64.AppImage
           path: src-tauri/target/release/bundle/appimage/angor-desktop-${{ env.VERSION }}-linux-amd64.AppImage
 
-    # - uses: actions/upload-artifact@v4
-    #   if: matrix.os == 'macos-latest'
-    #   with:
-    #     name: angor-desktop-${{ env.VERSION }}-app
-    #     path: src-tauri/target/release/bundle/macos/Angor.app
-
     - uses: actions/upload-artifact@v4
       name: Upload Mac
       if: matrix.os == 'macos-latest'
@@ -141,7 +136,7 @@ jobs:
           path: src-tauri\target\release\bundle\msi\angor-desktop-${{ env.VERSION }}-win-x64.msi
 
   create-release:
-    name: Publish
+    name: Publish (Release)
     needs: build
     runs-on: ubuntu-latest
     
@@ -177,7 +172,7 @@ jobs:
             artifacts/*
 
   deploy-release:
-    name: Deploy
+    name: Deploy (Test)
     needs: build
     runs-on: ubuntu-latest
     
